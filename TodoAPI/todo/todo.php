@@ -18,9 +18,7 @@ class TODO
         try{
             $con     = $this->db->OpenCon();
             $sql = true;
-            if(isset($todo) || isset($cat) || isset($desc)){
-                throw new \Exception('Fileds Must Contain Proper Values');
-            }
+            $this->Validation($todo, $cat, $desc);
             $stmt = $con->prepare("INSERT INTO todo(todo, category, description) VALUES (?,?,?)");
             $stmt->bind_param("sss", $todo,$cat,$desc);
             $result = $stmt->execute();
@@ -38,15 +36,12 @@ class TODO
         
     }
 
-    public function getAllTodo($limit,$offset)
+    public function getAllTodo()
     {
         try{
             $con = $this->db->OpenCon();
-            $stmt   = "SELECT * FROM todo LIMIT $limit OFFSET $offset";
-            if($limit == 0){
-
-                $stmt   = "SELECT * FROM todo";
-            }
+            $stmt   = "SELECT * FROM todo";
+            
             $sql    = true;
             $result = $con->query($stmt);
             if (!$result) {
@@ -92,13 +87,14 @@ class TODO
 
     }
 
-    public function updateTodo($todos, $cat, $desc, $id)
+    public function updateTodo($todo, $cat, $desc, $id)
     {
         try{
             $con   = $this->db->OpenCon();
             $sql = true;
+            $this->Validation($todo, $cat, $desc);
             $stmt = $con->prepare("UPDATE todo SET todo=?,category=?,description=? WHERE id=  ?");
-            $stmt->bind_param("sssi", $todo,$category,$desc,$todoid);
+            $stmt->bind_param("sssi", $todo,$category,$desc,$id);
             $result = $stmt->execute();
             if (!$result) {
                 $sql = $con->error;
@@ -139,25 +135,11 @@ class TODO
             $sql = $e->getMessage();
             return $sql;
     }
-    public function CountTodo()
-    {
-         
-        $con = $this->db->OpenCon();
-        $stmt   = "SELECT COUNT(*) as rows FROM `todo`";
-        $sql    = true;
-        $result = $con->query($stmt);
 
-        if (!$result) {
-            $sql = $con->error;
-        } else{
-
-            $row = $result->fetch_assoc();
-            $sql = $row['rows'];
+    function Validation($todo, $cat, $desc){
+        if(preg_match("/^(\s*|[\"]+)$/",$todo) || preg_match("/^(\s*|[\"]+)$/",$cat) || preg_match("/^(\s*|[\"]+)$/",$desc) ){
+            throw new \Exception('Fields Must Contain Proper Values');
         }
-
-        $this->db->CloseCon();
-
-        return $sql;
     }
 
 }
