@@ -94,28 +94,4 @@ $app->put('/todo/{id}/', function($request,$response){
 
 });
 
-$app->get('/todo/page/{page}', function($request,$response) {
-
-	$limit = 5;
- 	$page = $request->getAttribute('page');
-	$todo = new TodoRepository\Todo();
-	$count = $todo->CountTodo();
-	$offset = 0;
-	$data = null;
-
-	if($page <= 0) $page =1; 
-	if($page > 1){
-		$offset = ($page * $limit) - $limit;
-	}
-	
-
-	$result = $todo->getAllTodo($limit,$offset);
- 		 while ($row = $result->fetch_assoc()){
-	 
-			$data[] = $row;
-	 }
-	 
-	 $response->withStatus(200)->write(json_encode($data));
-});
-
 $app->run();
