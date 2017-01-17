@@ -6,10 +6,10 @@ class TODO
 
     protected $db = null;
 
-    public function __construct()
+    public function __construct(Db\Connection $con)
     {
 
-        $this->db = new db\Connection();
+        $this->db = $con;
 
     }
 
