@@ -6,11 +6,10 @@ class Connection
    protected $conn = NULL;
 
 
-   public function __construct($servername, $username,
-                        $password, $dbname) {
+   public function __construct($value) {
       $this->conn =
-         new \mysqli($servername, $username, $password,
-            $dbname);
+         new \mysqli($value['servername'], $value['username'], $value['password'],
+            $value['dbname']);
 
       if ($this->conn->connect_error) {
          throw new \Exception($this->conn->connect_error);
