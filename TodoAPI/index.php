@@ -24,9 +24,10 @@ $app->add(function ($req, $res, $next) {
     ->withHeader('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE, OPTIONS');
 });
 
-$app->get('/todo/', function($request,$response) {
+$app->get('/todo/', function($request,$response)
+use ($container) {
     
-    $todo = new TodoRepository\Todo();
+    $todo = new TodoRepository\Todo($container['db']);
     $data = null;
     $offset = 0;
     $limit = 0;
@@ -41,10 +42,11 @@ $app->get('/todo/', function($request,$response) {
     
 });
 
-$app->get('/todo/{id}/', function($request,$response) {
+$app->get('/todo/{id}/', function($request,$response)
+use ($container)  {
     
     $id = $request->getAttribute('id');
-    $todo = new TodoRepository\Todo();
+    $todo = new TodoRepository\Todo($container['db']);
     $data = null;
     $result = $todo->getTodo($id);
     $data[] = $result->fetch_assoc();
@@ -52,14 +54,15 @@ $app->get('/todo/{id}/', function($request,$response) {
     
 });
 
-$app->post('/todo/', function($request,$response){
+$app->post('/todo/', function($request,$response)
+use ($container) {
     
     
     $todos = $request->getParam('todo');
     $cat = $request->getParam('cat');
     $desc = $request->getParam('desc');
     
-    $todo = new TodoRepository\Todo();
+    $todo = new TodoRepository\Todo($container['db']);
     
     $result = $todo->createtodo($todos, $cat, $desc);
     
@@ -72,9 +75,10 @@ $app->post('/todo/', function($request,$response){
     
 });
 
-$app->delete('/todo/{id}/', function($request,$response){
+$app->delete('/todo/{id}/', function($request,$response)
+use ($container) {
     
-    $todo = new TodoRepository\Todo();
+    $todo = new TodoRepository\Todo($container['db']);
     $id = $request->getAttribute('id');
     $result = $todo->delTodo($id);
     if($result === true){
@@ -86,9 +90,10 @@ $app->delete('/todo/{id}/', function($request,$response){
     
 });
 
-$app->put('/todo/{id}/', function($request,$response){
+$app->put('/todo/{id}/', function($request,$response)
+use ($container){
     
-    $todo = new TodoRepository\Todo();
+    $todo = new TodoRepository\Todo($container['db']);
     $id = $request->getAttribute('id');
     $todos = $request->getParam('todo');
     $cat = $request->getParam('cat');
